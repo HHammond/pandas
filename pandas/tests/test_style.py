@@ -129,6 +129,19 @@ class TestStyler(TestCase):
         expected = {(0, 0): ['color: white']}
         self.assertEqual(result, expected)
 
+    def test_empty_index_name_doesnt_display(self):
+        # https://github.com/pydata/pandas/pull/12090#issuecomment-180695902
+        df = pd.DataFrame({'A': [1, 2], 'B': [3, 4], 'C': [5, 6]})
+        result = df.style._translate()
+
+        expected = [[{'class': 'blank', 'type': 'th', 'value': ''},
+                     {'class': 'col_heading level0 col0', 'type': 'th',
+                      'value': 'B', 'display_value': 'B'},
+                     {'class': 'col_heading level0 col1', 'type': 'th',
+                      'value': 'C', 'display_value': 'C'}]]
+
+        self.assertEqual(result['head'], expected)
+
     def test_index_name(self):
         # https://github.com/pydata/pandas/issues/11655
         df = pd.DataFrame({'A': [1, 2], 'B': [3, 4], 'C': [5, 6]})
